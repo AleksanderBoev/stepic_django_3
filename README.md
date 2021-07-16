@@ -1,1 +1,0 @@
-# stepic_django_3
