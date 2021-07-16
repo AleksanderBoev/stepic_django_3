@@ -5,7 +5,7 @@ def company_view(request, company_id):
     return render(request, 'companies/companies.html')
 
 
-def main_view(request, company_id):
+def main_view(request):
     return render(request, 'index.html')
 
 
@@ -14,4 +14,4 @@ def vacancy_view(request, vacancy_id):
 
 
 def vacancies_view(request, vacancies_path=None):
-    return render(request, 'vacancies/')
+    return render(request, 'vacancies/vacancies.html')
