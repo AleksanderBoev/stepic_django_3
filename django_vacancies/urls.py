@@ -18,10 +18,10 @@ from django.urls import path
 from vacancies.views import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('vacancies/<int:vacancy_id>', vacancy_view),
-    path('companies/<int:company_id>', company_view),
-    path('vacancies/', vacancies_view),
-    path('vacancies/<str:vacancies_path>', vacancies_view),
-    path('', main_view),
+    path('admin/', admin.site.urls, name='admin'),
+    path('vacancies/<int:vacancy_id>', vacancy_view, name='vacancy'),
+    path('companies/<int:company_id>', company_view, name='companies'),
+    path('vacancies/', vacancies_view, name='all_vacancies'),
+    path('vacancies/cat/<str:vacancies_path>', vacancies_view, name='vacancies_cat'),
+    path('', main_view, name='main'),
 ]
