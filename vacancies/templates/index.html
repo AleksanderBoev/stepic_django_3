@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load filters %}
 {% block head_page %}
 <head>
   <meta charset="UTF-8">
@@ -42,7 +43,7 @@
           <img class="mx-auto d-block" src="{{spec.picture}}" width="80" height="80" alt="">
           <div class="card-body">
             <p class="card-text mb-2">{{ spec.title }}</p>
-            <p class="card-text"><a href="/vacancies/cat/{{spec.code}}">{{ spec.vacancies.count }} вакансий</a></p>
+            <p class="card-text"><a href="{%url 'vacancies_cat' spec.code %}">{{ spec.vacancies.count|null_to_no }} {{ spec.vacancies.count|rus_plural_endings:'ваканс' }}</a></p>
           </div>
         </div>
       </div>
@@ -61,12 +62,12 @@
             <img class="mx-auto d-block mw-100" src="{{company_data.logo}}" alt="">
           </a>
           <div class="card-body">
-            <p class="card-text"><a href="/companies/{{company_data.id}}">{{ company_data.vacancies.count }} вакансий</a></p>
+            <p class="card-text"><a href="{%url 'companies' company_data.id %}">{{ company_data.vacancies.count|null_to_no }} {{ company_data.vacancies.count|rus_plural_endings:'ваканс' }}</a></p>
           </div>
         </div>
       </div>
     {% endfor %}
-      </div>
+    </div>
   </section>
 </main>
 {% endblock %}

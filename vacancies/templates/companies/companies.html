@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load filters %}
 {% block head_page %}
 <head>
   <meta charset="UTF-8">
@@ -17,7 +18,7 @@
       <img src="{{company.logo}}" width="130" height="80" alt="">
     </div>
     <h1 class="h1 text-center mx-auto mt-0 pt-1" style="font-size: 70px;"><strong>{{company.name}}</strong></h1>
-    <p class="text-center pt-1">Компания, {{company.location}}, {{company.vacancies.count}} вакансий</p>
+    <p class="text-center pt-1">Компания, {{company.location}}, {{company.vacancies.count|null_to_no}} {{ company.vacancies.count|rus_plural_endings:'ваканс' }}</p>
     <div class="row mt-5">
       <div class="col-12 col-lg-8 offset-lg-2 m-auto">
         {% for vacancy in company.vacancies.all %}
@@ -25,8 +26,8 @@
           <div class="card-body px-4">
             <div class="row">
               <div class="col-12 col-md-8 col-lg-9">
-                <h2 class="h2 pb-2">Build-Engineer (Билд-инженер)</h2>
-                <p class="mb-2">{{vacancy.skills}}</p>
+                <h2 class="h2 pb-2">{{ vacancy.title }}</h2>
+                <p class="mb-2">{{ vacancy.skills }}</p>
                 <p>От {{vacancy.salary_min}} до {{vacancy.salary_max}} руб.</p>
                 <p class="text-muted pt-1">{{vacancy.published_at}}</p>
               </div>
