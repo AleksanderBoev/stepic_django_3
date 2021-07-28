@@ -16,12 +16,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from vacancies.views import *
-
+from accounts.views import *
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('vacancies/<int:vacancy_id>', vacancy_view, name='vacancy'),
     path('companies/<int:company_id>', company_view, name='companies'),
     path('vacancies/', vacancies_view, name='all_vacancies'),
+    path('', main_view, name='all_vacancies'),
+    path('login', login_view.as_view(), name='login'),
+    path('logout', LogoutView.as_view(), name='logout'),
+    path('register', register_view, name='register'),
     path('vacancies/cat/<str:vacancies_path>', vacancies_view, name='vacancies_cat'),
-    path('', main_view, name='main'),
+    path('mycompany/letsstart/', mycompany_letsstart_view, name='mycompany_letsstart'),
+    path('mycompany/create/', mycompany_edit_view, {'new': True}, name='mycompany_create'),
+    path('mycompany', mycompany_edit_view, {'new': False}, name='mycompany_edit'),
+    path('/mycompany/vacancies/', mycompany_vacancies_view.as_view(), name='mycompany_vacancies'),
+    path('/mycompany/vacancies/create/', mycompany_vacancy_create_view, name='mycompany_vacancy_create'),
+    path('/mycompany/vacancies/<int:vacancy_id>', mycompany_vacancies_view.as_view(), name='mycompany_vacancy'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
