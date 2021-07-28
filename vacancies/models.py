@@ -7,7 +7,7 @@ from datetime import datetime
 class Company(models.Model):
     name = models.CharField(max_length=20)
     location = models.CharField(max_length=50)
-    logo = models.ImageField(upload_to='company_images/', null=True)
+    logo = models.ImageField(upload_to='company_images/', blank=True, null=True)
     description = models.TextField()
     employee_count = models.IntegerField()
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='Company')

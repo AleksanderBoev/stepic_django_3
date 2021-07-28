@@ -10,9 +10,31 @@ from django.contrib.auth.models import User
 from django import forms
 from django.views.generic import ListView
 
-def mycompany_vacancy_create_view(request, **kwargs):
+class vacancy_edit_form(forms.ModelForm):
+    class Meta:
+        model = Vacancy
+        fields = ('title',
+                  'specialty',
+                  'skills',
+                  'description',
+                  'salary_min',
+                  'salary_max',
+                  )
+
+def mycompany_vacancy_create_view(request, vacancy_id=None, **kwargs):
+    if kwargs['new']:
+        data = Vacancy()
+    else:
+        data = Vacancy.objects.get(id=vacancy_id)
+    if request.method.upper() == 'POST':
+        form_data = vacancy_edit_form(request.POST)
+        if form_data.is_valid():
+            print(True, form_data.cleaned_data)
+        else:
+            print(form_data.errors)
     return render(request, 'companies/vacancy-edit.html', {
-            'company': updata_data.cleaned_data,
+            'vacancy': data,
+            'specialty': Specialty.objects.all(),
         })
 
 class mycompany_vacancies_view(ListView):
@@ -26,7 +48,6 @@ class mycompany_edit_form(forms.ModelForm):
         model = Company
         fields = ('name',
                   'location',
-                  #'logo',
                   'description',
                   'employee_count',
                   )
@@ -39,13 +60,17 @@ def mycompany_edit_view(request, **kwargs):
         if updata_data.is_valid():
             updata_data = updata_data.save(commit=False)
             updata_data.owner = User.objects.get_by_natural_key(username=request.user)
-            updata_data.logo = request.FILES.get('logo') or 
+            if data.count() and request.FILES.get('logo') is None:
+                print('dd')
+                updata_data.logo = data.first().logo
+            else:
+                updata_data.logo = request.FILES.get('logo') or '/company_images/default.png'
             if data.count():
                 print('logo', updata_data.logo)
                 Company.objects.filter(owner=User.objects.get(username=request.user)).update(
                     name=updata_data.name,
                     location=updata_data.location,
-                    logo=updata_data.logo or data.first().logo,
+                    logo=updata_data.logo,
                     description=updata_data.description,
                     employee_count=updata_data.employee_count,
                     owner=User.objects.get(username=request.user),
