@@ -45,7 +45,7 @@
                       <label class="mb-2 text-dark" for="userSpecialization">Специализация</label>
                       <select class="custom-select mr-sm-2" id="userSpecialization" name="specialty">
                         {%for i in specialty%}
-                        <option {% if vacancy.specialty == i.title %}selected{% endif %}>{{i.title}}</option>
+                        <option value="{{i.code}}" {% if vacancy.specialty == i.title %}selected{% endif %}>{{i.title}}</option>
                         {%endfor%}
                       </select>
                     </div>

@@ -14,7 +14,7 @@ class vacancy_edit_form(forms.ModelForm):
     class Meta:
         model = Vacancy
         fields = ('title',
-                  'specialty',
+                  #'specialty',
                   'skills',
                   'description',
                   'salary_min',
@@ -30,8 +30,13 @@ def mycompany_vacancy_create_view(request, vacancy_id=None, **kwargs):
         form_data = vacancy_edit_form(request.POST)
         if form_data.is_valid():
             print(True, form_data.cleaned_data)
+            form_data = form_data.save(commit=False)
+            form_data.specialty = Specialty.objects.get(code=request.POST.get('specialty'))
+            form_data.company = Company.objects.get(owner__username=request.user)
+            form_data.save()
         else:
             print(form_data.errors)
+            print(request.POST.get('specialty'))
     return render(request, 'companies/vacancy-edit.html', {
             'vacancy': data,
             'specialty': Specialty.objects.all(),
