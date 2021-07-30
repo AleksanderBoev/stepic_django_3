@@ -32,15 +32,18 @@
             <p class="h5 mt-3 font-weight-normal">Отозваться на вакансию</p>
             <div class="form-group">
               <label class="mb-1 mt-2" for="userName">Вас зовут</label>
-              <input class="form-control" type="text" placeholder="" name="userName">
+              <input class="form-control" type="text" placeholder="" name="written_username">
+              <label class="mb-1" for="userMsg" >{{form.written_username.errors}}</label>
             </div>
             <div class="form-group">
               <label class="mb-1" for="userPhone">Ваш телефон</label>
-              <input class="form-control" type="tel" placeholder="" name="userPhone">
+              <input class="form-control" type="tel" placeholder="" name="written_phone">
+              <label class="mb-1" for="userMsg" >{{form.written_phone.errors}}</label>
             </div>
             <div class="form-group">
               <label class="mb-1" for="userMsg" >Сопроводительное письмо</label>
-              <textarea class="form-control" rows="8" name="userMsg"></textarea>
+              <textarea class="form-control" rows="8" name="written_cover_letter"></textarea>
+              <label class="mb-1" for="userMsg" >{{form.written_cover_letter.errors}}</label>
             </div>
             <input type="submit" class="btn btn-primary mt-4 mb-2" value="Записаться на пробный урок">
           </div>

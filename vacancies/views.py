@@ -1,7 +1,5 @@
 from django.shortcuts import render
-from vacancies.models import Company
-from vacancies.models import Specialty
-from vacancies.models import Vacancy
+from vacancies.models import Vacancy, Application, Specialty, Company
 from django.http import Http404, HttpResponseServerError
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
@@ -14,7 +12,6 @@ class vacancy_edit_form(forms.ModelForm):
     class Meta:
         model = Vacancy
         fields = ('title',
-                  #'specialty',
                   'skills',
                   'description',
                   'salary_min',
@@ -26,20 +23,29 @@ def mycompany_vacancy_create_view(request, vacancy_id=None, **kwargs):
         data = Vacancy()
     else:
         data = Vacancy.objects.get(id=vacancy_id)
+    form_data = vacancy_edit_form()
+    updated = False
     if request.method.upper() == 'POST':
         form_data = vacancy_edit_form(request.POST)
         if form_data.is_valid():
-            print(True, form_data.cleaned_data)
             form_data = form_data.save(commit=False)
             form_data.specialty = Specialty.objects.get(code=request.POST.get('specialty'))
             form_data.company = Company.objects.get(owner__username=request.user)
+            form_data.id = data.id
             form_data.save()
+            updated = True
         else:
-            print(form_data.errors)
-            print(request.POST.get('specialty'))
+            data = form_data.cleaned_data
+        if not kwargs['new']:
+            data = form_data
+
+    print(data.salary_min)
     return render(request, 'companies/vacancy-edit.html', {
-            'vacancy': data,
-            'specialty': Specialty.objects.all(),
+        'vacancy': data,
+        'form': form_data,
+        'specialty': Specialty.objects.all(),
+        'applications': Application.objects.filter(vacancy__company__owner=request.user),
+        'updated': updated,
         })
 
 class mycompany_vacancies_view(ListView):
@@ -98,6 +104,8 @@ def mycompany_edit_view(request, **kwargs):
     return render(request, 'companies/company-edit.html', {
         'company': data.first(),
         'form': mycompany_edit_form,
+
+
     })
 
 def mycompany_letsstart_view(request):
@@ -124,18 +132,33 @@ def main_view(request):
         'specialty': Specialty.objects.all(),
     })
 
-
+class vacancy_application_form(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = (
+            'written_cover_letter',
+            'written_phone',
+            'written_username',
+        )
 def vacancy_view(request, vacancy_id):
+    data = object()
     if request.method.upper() == 'POST':
-        print('sss')
-        print(request.POST.get('userName'))
-        return render(request, 'vacancy/send.html', {
-            'vacancy_id': vacancy_id,
-            'picture_rout': settings.MEDIA_URL + '/check.png',
-        })
+        data = vacancy_application_form(request.POST)
+        if data.is_valid():
+            data = data.save(commit=False)
+            data.vacancy = Vacancy.objects.get(id=vacancy_id)
+            data.user = User.objects.get(username=request.user)
+            data.save()
+            return render(request, 'vacancy/send.html', {
+                'vacancy_id': vacancy_id,
+                'picture_rout': settings.MEDIA_URL + '/check.png',
+            })
+        print(data.cleaned_data)
     try:
         return render(request, 'vacancy/vacancy.html', {
             'vacancy': Vacancy.objects.get(id=vacancy_id),
+            'form': data,
+
         })
     except Vacancy.DoesNotExist:
         raise Http404
