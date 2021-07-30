@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-!2e=q4(svv-mq-se_)-(dr9p-a-(m#l3vs=fkuv1rmq@_a)y45
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://stepic-django-3.herokuapp.com/']
+ALLOWED_HOSTS = ['stepic-django-3.herokuapp.com']
 
 
 # Application definition
